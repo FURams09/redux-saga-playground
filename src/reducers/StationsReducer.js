@@ -9,6 +9,7 @@ const initialState = {
   stations: [],
   isLoading: false,
   error: null,
+  isSorted: false,
   sortAsc: true
 };
 
@@ -35,18 +36,11 @@ export default (state = initialState, action) => {
     };
   }
   if (action.type === SORT_STATIONS) {
-    let newStations = [...state.stations];
-    newStations.sort((a, b) => {
-      if (state.sortAsc) {
-        return a.name > b.name;
-      } else {
-        return b.name > a.name;
-      }
-    });
     return {
       ...state,
       sortAsc: !state.sortAsc,
-      stations: newStations
+      isSorted: true,
+      stations: action.payload
     };
   }
 

@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import * as d3 from 'd3';
+import borough from '../data/Borough Boundaries';
 import {
   RETRIEVE_STATIONS,
   GOT_STATIONS,
@@ -15,14 +17,29 @@ class StationList extends Component {
       .get("https://gbfs.citibikenyc.com/gbfs/en/station_information.json")
       .then(({ data }) => {
         const { stations } = data.data;
+        console.log(borough.features)  ;
         this.props.gotStation(stations);
       })
       .catch(err => {
         this.props.failedStation(err);
       });
   }
+
+  handleSort() {
+    let sortedStation = [...this.props.stations];
+    sortedStation.sort((a, b) => {
+        if (a.name < b.name) {
+          return -1
+        } else {
+          return 1
+        }
+      });
+     if (!this.props.sortAsc) {  
+      sortedStation = this.props.stations.reverse();
+    }
+    this.props.sortStations(sortedStation)
+  }
   render() {
-    console.log(this.props.isLoading);
     if (this.props.isLoading) {
       return <div>Loading...</div>;
     }
@@ -32,7 +49,7 @@ class StationList extends Component {
 
     return (
       <>
-        <button onClick={this.props.sortStations}>Sort</button>
+        <button onClick={this.handleSort.bind(this)}>Sort</button>
         <ul>{stations}</ul>
       </>
     );
@@ -44,7 +61,9 @@ const mapStateToProps = state => {
   return {
     stations: stationReducer.stations,
     isLoading: stationReducer.isLoading,
-    error: stationReducer.error
+    error: stationReducer.error,
+    isSorted: stationReducer.isSorted,
+    sortAsc: stationReducer.sortAsc
   };
 };
 
@@ -53,7 +72,7 @@ const mapDispatchToProps = dispatch => {
     getStation: () => dispatch({ type: RETRIEVE_STATIONS }),
     gotStation: payload => dispatch({ type: GOT_STATIONS, payload }),
     failedStation: err => dispatch({ type: FAILED_GET_STATIONS, payload: err }),
-    sortStations: () => dispatch({ type: SORT_STATIONS })
+    sortStations: (newStations) => dispatch({ type: SORT_STATIONS, payload: newStations })
   };
 };
 

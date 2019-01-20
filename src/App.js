@@ -1,29 +1,20 @@
 import React, { Component } from "react";
-import "./App.css";
+import styled from 'styled-components';
 import { Router, Link } from "@reach/router";
 import AL from "./components/AssetList";
 import SL from "./components/StationList";
+
+const NavLink = styled(Link)`
+  padding: 0 15px;
+`
 class App extends Component {
   render() {
     return (
       <div className="App">
-        {/* <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header> */}
+       
         <nav>
-          <Link to="/list">List</Link>
-          <Link to="/stations">Stations</Link>
+          <NavLink to="/list">List</NavLink>
+          <NavLink to="/stations">Stations</NavLink>
         </nav>
         <Router>
           <AL path="/list" />
