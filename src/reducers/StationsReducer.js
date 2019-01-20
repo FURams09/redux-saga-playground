@@ -2,7 +2,8 @@ import {
   RETRIEVE_STATIONS,
   GOT_STATIONS,
   FAILED_GET_STATIONS,
-  SORT_STATIONS
+  SORT_STATIONS,
+  SELECT_STATION
 } from "../constants/stations";
 
 const initialState = {
@@ -10,7 +11,12 @@ const initialState = {
   isLoading: false,
   error: null,
   isSorted: false,
-  sortAsc: true
+  sortAsc: true,
+  displayedStation: {
+    name: 'N/A',
+    lon: 0,
+    lat: 0
+  }
 };
 
 export default (state = initialState, action) => {
@@ -42,6 +48,13 @@ export default (state = initialState, action) => {
       isSorted: true,
       stations: action.payload
     };
+  }
+  if (action.type === SELECT_STATION) {
+    console.log(action.payload)
+    return {
+      ...state,
+      displayedStation: action.payload,
+    }
   }
 
   return state;
