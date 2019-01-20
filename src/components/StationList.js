@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import * as d3 from 'd3';
-import borough from '../data/Borough Boundaries';
+
 import {
   RETRIEVE_STATIONS,
   GOT_STATIONS,
@@ -17,7 +17,14 @@ class StationList extends Component {
       .get("https://gbfs.citibikenyc.com/gbfs/en/station_information.json")
       .then(({ data }) => {
         const { stations } = data.data;
-        console.log(borough.features)  ;
+        try {
+          const borough = require('../data/Borough Boundaries.geojson');
+          console.log(borough.features)
+        } catch (error) {
+          console.log(error);
+        }
+        
+        //console.log(borough.features[0])  ;
         this.props.gotStation(stations);
       })
       .catch(err => {
