@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import * as d3 from 'd3';
-
+import boroughs from '../data/Borough Boundaries.geojson';
 import {
   RETRIEVE_STATIONS,
   GOT_STATIONS,
@@ -16,16 +16,24 @@ class StationList extends Component {
     axios
       .get("https://gbfs.citibikenyc.com/gbfs/en/station_information.json")
       .then(({ data }) => {
-        const { stations } = data.data;
-        try {
-          const borough = require('../data/Borough Boundaries.geojson');
-          console.log(borough.features)
-        } catch (error) {
-          console.log(error);
-        }
+        let { stations } = data.data;
+
+        const boroughStations = stations.map(station => {
+          let currentBorough = boroughs.features.filter((borough) => {
+            return d3.geoContains(borough.geometry, [station.lon, station.lat]);
+          })
+          
+          let boroughName = 'N/A';
+          if (currentBorough.length > 0) { 
+            boroughName = currentBorough[0].properties.boro_name }
+          
+          return {
+            ...station,
+            borough: boroughName
+          }
+        })
         
-        //console.log(borough.features[0])  ;
-        this.props.gotStation(stations);
+        this.props.gotStation(boroughStations);
       })
       .catch(err => {
         this.props.failedStation(err);
@@ -51,7 +59,7 @@ class StationList extends Component {
       return <div>Loading...</div>;
     }
     const stations = this.props.stations.map((station, i) => {
-      return <li key={i}>{station.name}</li>;
+      return <li key={i}>{station.name} - {station.borough}</li>;
     });
 
     return (
