@@ -50,7 +50,6 @@ export default (state = initialState, action) => {
     };
   }
   if (action.type === SELECT_STATION) {
-    console.log(action.payload)
     return {
       ...state,
       displayedStation: action.payload,

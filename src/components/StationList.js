@@ -11,6 +11,9 @@ import {
   SELECT_STATION
 } from "../constants/stations";
 
+import {MAPS_API_KEY} from '../secrets';
+import GoogleMapReact from 'google-map-react';
+
 import axios from "axios";
 
 const GridLayout = styled.div`
@@ -89,7 +92,7 @@ class StationList extends Component {
                 <button onClick={this.selectStation.bind(this, station.name, station.lon, station.lat)}>view</button>
               </li>;
     });
-    console.log()
+    console.log({lat: this.props.displayedStation.lat, lng: this.props.displayedStation.lon})
     return (
       <>
         <GridLayout>
@@ -102,7 +105,15 @@ class StationList extends Component {
           </div>
           <div>
             <p>{this.props.displayedStation.name} lon: {this.props.displayedStation.lon} lat: {this.props.displayedStation.lat}</p>
-            <MapArea></MapArea>
+            <MapArea>
+              <GoogleMapReact
+                bootstrapURLKeys={{key: MAPS_API_KEY}}
+                defaultCenter={{lat: 0, lng: 0}}
+                center={{lat: this.props.displayedStation.lat, lng: this.props.displayedStation.lon}}
+                defaultZoom={11}>
+                  <div lat={this.props.displayedStation.lat} lng = {this.props.displayedStation.lon} >Bike</div>
+              </GoogleMapReact>
+            </MapArea>
           </div>
         </GridLayout>
       </>
