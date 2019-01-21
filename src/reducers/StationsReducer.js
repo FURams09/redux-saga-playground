@@ -14,8 +14,8 @@ const initialState = {
   sortAsc: true,
   displayedStation: {
     name: 'N/A',
-    lon: 0,
-    lat: 0
+    lon: -73.930819,
+    lat: 40.76599
   }
 };
 

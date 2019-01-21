@@ -108,7 +108,6 @@ class StationList extends Component {
             <MapArea>
               <GoogleMapReact
                 bootstrapURLKeys={{key: MAPS_API_KEY}}
-                defaultCenter={{lat: 0, lng: 0}}
                 center={{lat: this.props.displayedStation.lat, lng: this.props.displayedStation.lon}}
                 defaultZoom={11}>
                   <div lat={this.props.displayedStation.lat} lng = {this.props.displayedStation.lon} >Bike</div>
