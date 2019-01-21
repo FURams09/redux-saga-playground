@@ -1,17 +1,17 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import * as d3 from 'd3';
-import boroughs from '../data/Borough Boundaries.geojson';
+import boroughs from '../../data/Borough Boundaries.geojson';
 import styled from 'styled-components';
+import StationItem from './StationItem';
 import {
   RETRIEVE_STATIONS,
   GOT_STATIONS,
   FAILED_GET_STATIONS,
   SORT_STATIONS,
-  SELECT_STATION
-} from "../constants/stations";
+} from "../../constants/stations";
 
-import {MAPS_API_KEY} from '../secrets';
+import {MAPS_API_KEY} from '../../secrets';
 import GoogleMapReact from 'google-map-react';
 
 import axios from "axios";
@@ -31,6 +31,9 @@ const ListContainer = styled.div`
   overflow: auto;
 `
 
+const Marker = styled.div`
+  font-size: 8px;
+`
 class StationList extends Component {
   componentDidMount() {
     this.props.getStation();
@@ -79,43 +82,40 @@ class StationList extends Component {
     }
     this.props.sortStations(sortedStation)
   }
-
-  selectStation(name, lon, lat) {
-    this.props.selectStation(name, lon, lat)
-  }
   render() {
     if (this.props.isLoading) {
       return <div>Loading...</div>;
     }
     const stations = this.props.stations.map((station, i) => {
-      return <li key={i}>{station.name} - {station.borough} 
-                <button onClick={this.selectStation.bind(this, station.name, station.lon, station.lat)}>view</button>
-              </li>;
+      return <StationItem 
+        key={i}
+        name={station.name}
+        borough={station.borough}
+        lon={station.lon}
+        lat={station.lat}
+      />
     });
-    console.log({lat: this.props.displayedStation.lat, lng: this.props.displayedStation.lon})
     return (
-      <>
-        <GridLayout>
-          <div>
-            <button onClick={this.handleSort.bind(this)}>Sort</button>
-            <ListContainer>
-              
-              <ul>{stations}</ul>
-            </ListContainer>
-          </div>
-          <div>
-            <p>{this.props.displayedStation.name} lon: {this.props.displayedStation.lon} lat: {this.props.displayedStation.lat}</p>
-            <MapArea>
-              <GoogleMapReact
-                bootstrapURLKeys={{key: MAPS_API_KEY}}
-                center={{lat: this.props.displayedStation.lat, lng: this.props.displayedStation.lon}}
-                defaultZoom={11}>
-                  <div lat={this.props.displayedStation.lat} lng = {this.props.displayedStation.lon} >Bike</div>
-              </GoogleMapReact>
-            </MapArea>
-          </div>
-        </GridLayout>
-      </>
+      <GridLayout>
+        <div>
+          <button onClick={this.handleSort.bind(this)}>Sort</button>
+          <ListContainer>
+            
+            <ul>{stations}</ul>
+          </ListContainer>
+        </div>
+        <div>
+          <p>{this.props.displayedStation.name} lon: {this.props.displayedStation.lon} lat: {this.props.displayedStation.lat}</p>
+          <MapArea>
+            <GoogleMapReact
+              bootstrapURLKeys={{key: MAPS_API_KEY}}
+              center={{lat: this.props.displayedStation.lat, lng: this.props.displayedStation.lon}}
+              defaultZoom={11}>
+                <Marker lat={this.props.displayedStation.lat} lng = {this.props.displayedStation.lon} >Bike</Marker>
+            </GoogleMapReact>
+          </MapArea>
+        </div>
+      </GridLayout>
     );
   }
 }
@@ -138,7 +138,6 @@ const mapDispatchToProps = dispatch => {
     gotStation: payload => dispatch({ type: GOT_STATIONS, payload }),
     failedStation: err => dispatch({ type: FAILED_GET_STATIONS, payload: err }),
     sortStations: (newStations) => dispatch({ type: SORT_STATIONS, payload: newStations }),
-    selectStation: (name, lon, lat) => dispatch({type: SELECT_STATION, payload: {name, lon, lat}})
   };
 };
 
