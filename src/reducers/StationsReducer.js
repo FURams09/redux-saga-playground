@@ -3,8 +3,10 @@ import {
   GOT_STATIONS,
   FAILED_GET_STATIONS,
   SORT_STATIONS,
-  SELECT_STATION
+  SELECT_STATION,
+  UPDATE_FILTER_VALUE
 } from "../constants/stations";
+
 
 const initialState = {
   stations: [],
@@ -16,7 +18,8 @@ const initialState = {
     name: 'N/A',
     lon: -73.930819,
     lat: 40.76599
-  }
+  },
+  filter: ''
 };
 
 export default (state = initialState, action) => {
@@ -27,6 +30,7 @@ export default (state = initialState, action) => {
     };
   }
   if (action.type === GOT_STATIONS) {
+    console.log(action)
     return {
       ...state,
       stations: action.payload,
@@ -53,6 +57,13 @@ export default (state = initialState, action) => {
     return {
       ...state,
       displayedStation: action.payload,
+    }
+  }
+
+  if (action.type === UPDATE_FILTER_VALUE) {
+    return {
+      ...state,
+      filterValue: action.payload
     }
   }
 

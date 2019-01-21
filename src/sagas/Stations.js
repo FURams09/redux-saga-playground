@@ -1,6 +1,8 @@
 import axios from 'axios'
+import * as d3 from 'd3';
+import boroughs from '../data/Borough Boundaries.geojson';
 
-import { put, takeEvery} from 'redux-saga/effects';
+import { put, call, takeEvery} from 'redux-saga/effects';
 import {RETRIEVE_STATIONS, GOT_STATIONS, FAILED_GET_STATIONS, SORT_STATIONS} from '../constants/stations'
 
 export default function* watchStation() {
@@ -10,17 +12,16 @@ export default function* watchStation() {
 
 function* getStationList() {
   try {
-    const res = yield axios
-        .get("https://gbfs.citibikenyc.com/gbfs/en/station_information.json")
+    const res = yield call(axios.get, "https://gbfs.citibikenyc.com/gbfs/en/station_information.json")
     let { stations } = res.data.data;
     const boroughStations = yield stations.map(station => {
       let currentBorough = [];
-      // if (false) { // set to false to prevent expensive filter before adding a local cache
-      //   currentBorough = boroughs.features.filter((borough) => {
-      //     return d3.geoContains(borough.geometry, [station.lon, station.lat]);
-      //   })
+      if (false) { // set to false to prevent expensive filter before adding a local cache
+        currentBorough = boroughs.features.filter((borough) => {
+          return d3.geoContains(borough.geometry, [station.lon, station.lat]);
+        })
   
-      // }
+      }
       
       let boroughName = 'N/A';
       if (currentBorough.length > 0) { 
@@ -39,7 +40,6 @@ function* getStationList() {
 }
 
 function* sortStations(action) {
-  console.log(action.payload.stations)
   let sortedStation = yield action.payload.stations.sort((a, b) => {
     if (a.name < b.name) {
       return -1

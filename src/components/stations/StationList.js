@@ -1,20 +1,15 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import * as d3 from 'd3';
-import boroughs from '../../data/Borough Boundaries.geojson';
 import styled from 'styled-components';
 import StationItem from './StationItem';
+import InputBar from './Input';
 import {
   RETRIEVE_STATIONS,
-  GOT_STATIONS,
-  FAILED_GET_STATIONS,
   SORT_STATIONS,
 } from "../../constants/stations";
 
 import {MAPS_API_KEY} from '../../secrets';
 import GoogleMapReact from 'google-map-react';
-
-import axios from "axios";
 
 const GridLayout = styled.div`
   display: grid;
@@ -32,8 +27,12 @@ const ListContainer = styled.div`
 `
 
 const Marker = styled.div`
-  font-size: 8px;
+  font-size: 20px;
 `
+const SortButton = styled.button`
+  margin: 6px;
+`
+
 class StationList extends Component {
   componentDidMount() {
     this.props.getStation();
@@ -46,7 +45,6 @@ class StationList extends Component {
     if (this.props.isLoading) {
       return <div>Loading...</div>;
     }
-    console.log(this.props.stations)
     const stations = this.props.stations.map((station, i) => {
       return <StationItem 
         key={i}
@@ -59,7 +57,8 @@ class StationList extends Component {
     return (
       <GridLayout>
         <div>
-          <button onClick={this.handleSort.bind(this)}>Sort</button>
+          <SortButton onClick={this.handleSort.bind(this)}>Sort</SortButton>
+          <InputBar />
           <ListContainer>
             
             <ul>{stations}</ul>
@@ -96,8 +95,6 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     getStation: () => dispatch({ type: RETRIEVE_STATIONS }),
-    gotStation: payload => dispatch({ type: GOT_STATIONS, payload }),
-    failedStation: err => dispatch({ type: FAILED_GET_STATIONS, payload: err }),
     sortStations: (stations, isAsc) => dispatch({ type: SORT_STATIONS, payload: {stations, isAsc} }),
   };
 };
