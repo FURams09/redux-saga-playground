@@ -5,12 +5,12 @@ import createSagaMiddleware from 'redux-saga';
 import App from "./App";
 
 import reducer from "./reducers";
-import stationSagas from './sagas/Stations';
+import sagas from './sagas/';
 
 const sagaMiddleware = createSagaMiddleware();
 const store = createStore(reducer, applyMiddleware(sagaMiddleware));
 
-sagaMiddleware.run(stationSagas);
+sagaMiddleware.run(sagas);
 export default _ => {
   return (
     <Provider store={store}>

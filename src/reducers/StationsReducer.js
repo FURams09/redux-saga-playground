@@ -4,7 +4,8 @@ import {
   FAILED_GET_STATIONS,
   SORT_STATIONS,
   SELECT_STATION,
-  UPDATE_FILTER_VALUE
+  UPDATE_FILTER_VALUE,
+  UPDATE_DISPLAY_LIST
 } from "../constants/stations";
 
 
@@ -19,7 +20,8 @@ const initialState = {
     lon: -73.930819,
     lat: 40.76599
   },
-  filter: ''
+  filter: '',
+  filteredStations: []
 };
 
 export default (state = initialState, action) => {
@@ -30,10 +32,10 @@ export default (state = initialState, action) => {
     };
   }
   if (action.type === GOT_STATIONS) {
-    console.log(action)
     return {
       ...state,
       stations: action.payload,
+      filteredStations: action.payload,
       isLoading: false,
       error: null
     };
@@ -50,7 +52,7 @@ export default (state = initialState, action) => {
       ...state,
       sortAsc: !state.sortAsc,
       isSorted: true,
-      stations: action.payload
+      filteredStations: action.payload
     };
   }
   if (action.type === SELECT_STATION) {
@@ -63,7 +65,14 @@ export default (state = initialState, action) => {
   if (action.type === UPDATE_FILTER_VALUE) {
     return {
       ...state,
-      filterValue: action.payload
+      filter: action.payload
+    }
+  }
+
+  if (action.type === UPDATE_DISPLAY_LIST) {
+    return {
+      ...state,
+      filteredStations: action.payload
     }
   }
 

@@ -83,7 +83,7 @@ class StationList extends Component {
 const mapStateToProps = state => {
   const { stationReducer } = state;
   return {
-    stations: stationReducer.stations,
+    stations: stationReducer.filteredStations,
     isLoading: stationReducer.isLoading,
     error: stationReducer.error,
     isSorted: stationReducer.isSorted,

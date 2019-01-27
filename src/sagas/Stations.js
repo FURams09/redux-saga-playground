@@ -3,7 +3,7 @@ import * as d3 from 'd3';
 import boroughs from '../data/Borough Boundaries.geojson';
 
 import { put, call, takeEvery} from 'redux-saga/effects';
-import {RETRIEVE_STATIONS, GOT_STATIONS, FAILED_GET_STATIONS, SORT_STATIONS} from '../constants/stations'
+import {RETRIEVE_STATIONS, GOT_STATIONS, UPDATE_DISPLAY_LIST, FAILED_GET_STATIONS, SORT_STATIONS} from '../constants/stations'
 
 export default function* watchStation() {
   yield takeEvery(RETRIEVE_STATIONS, getStationList);
@@ -50,5 +50,5 @@ function* sortStations(action) {
  if (!action.payload.isAsc) {  
     sortedStation = action.payload.stations.reverse();
   }
-  yield put({type: GOT_STATIONS, payload: sortedStation});
+  yield put({type: UPDATE_DISPLAY_LIST, payload: sortedStation});
 }
